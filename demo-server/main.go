@@ -2,17 +2,23 @@ package main
 
 import (
 	"context"
-	"encoding/json"
 	"fmt"
 	"log"
 	"net/http"
 	"os"
 	"os/signal"
-	"statetoken"
 	"strings"
+
+	"gorm.io/driver/sqlite"
+	"gorm.io/gorm"
+
+	"github.com/nakurai/mcp-experiment/demo-server/internal/handlers"
+	"github.com/nakurai/mcp-experiment/demo-server/internal/models"
+	"github.com/nakurai/mcp-experiment/demo-server/internal/statetoken"
 )
 
 var ENV = map[string]string{}
+var db *gorm.DB
 
 func init() {
 	// Load environement variables
@@ -29,21 +35,13 @@ func init() {
 
 }
 
-func makeRes(w http.ResponseWriter, res any) {
-	w.Header().Set("Content-Type", "application/json")
-	json.NewEncoder(w).Encode(res)
-}
 
-func createApp(ctx context.Context) *http.ServeMux{
+func createApp() *http.ServeMux{
 	mux := http.NewServeMux()
 	fs := http.FileServer(http.Dir("./public"))
 	mux.Handle("/", fs)
-	mux.HandleFunc("/api/login", func(w http.ResponseWriter, r *http.Request) {
-		handleGitHubLogin(w, r, ctx)
-	} )
-	mux.HandleFunc("/api/github/callback", func(w http.ResponseWriter, r *http.Request) {
-		handleGitHubCallback(w, r, ctx)
-	} )
+	mux.HandleFunc("/api/login", handlers.HandleGitHubLogin)
+	mux.HandleFunc("/api/github/callback", handlers.HandleGitHubCallback)
 	return mux
 }
 
@@ -51,12 +49,20 @@ func main() {
 	ctx, cancel := context.WithCancel(context.Background())
 	defer cancel()
 
+	var err error
+	db, err = gorm.Open(sqlite.Open(ENV["DB_PATH"]), &gorm.Config{})
+	if err != nil {
+		log.Fatal(err)
+	}
+	db.AutoMigrate(&models.User{})
+
 	// start state token expiration checks
 	statetoken.Init(ctx)
 
 	// creating the app
-	mux := createApp(ctx)
-	app := &http.Server{Addr: ":8090", Handler: mux}
+	mux := createApp()
+	handler := withDBSession(mux, db)
+	app := &http.Server{Addr: ":8090", Handler: handler}
 	
 	// starting the server!
 	go func() {
