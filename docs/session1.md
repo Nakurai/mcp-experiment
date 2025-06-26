@@ -33,9 +33,11 @@ In the future, I am guessing there will probably be an equivalent of Google sear
 
 ## How an MCP server?
 
-It seems like a big unknown here lies in the authentication. At least when it comes to MCP servers available via HTTP. The MCP spec says that the servers must implement OAuth 2.0 and the clients...well, nothing much there.
+It seems like a big unknown here lies in the authentication. At least when it comes to MCP servers available via HTTP. The MCP spec says that the servers must implement OAuth 2.0 and the clients...well, nothing much there. At least not in terms of communication between the host and the client.
 
 The question is this: where do you login? Or type your credit card information? In the example I gave earlier, I am guessing this will be a necessary feature of the plugins you would install in softwares like Claude Desktop (which also means that those softwares will need to give the plugins the ability to do so). They will need a secure way to receive sensitive data and make the LLMs able to use the resulting authentication mechanism (tokens etc.).
+
+On this note, [this PR](https://github.com/modelcontextprotocol/modelcontextprotocol/pull/284) on the modelcontextprotocol github repo seems to indicates that the MCP server itself do not have to implement OAuth anymore, it can just be used as a resource server.
 
 Alright, let's see what a basic MCP server looks like in [session 2](/docs/session2.md).
 
