@@ -9,8 +9,7 @@ By connecting the LLM to this tool, it can summarize our messages, suggest answe
 ## Endpoints
 The tool will be a demo server. Here are the endpoints:
 
-- POST /signup: pwd, username
-- POST /login: pwd, username
+- POST /api/login: initiate the Github Oauth web flow
 - POST /messages: content,recipient,date / headers: access token
 - GET /messages: date / headers: access token
 - GET /search: content, recipient, date / headers: access token

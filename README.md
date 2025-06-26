@@ -6,8 +6,11 @@ This experiment will run in several sessions, each session's details can be foun
 
 ## Sessions
 
-- [Session 1: MCP server basics](/docs/sessions/session1.md)
-- [Session 2: The demo server](/docs/sessions/session2.md)
+- [Session 1: MCP Server Basics](/docs/sessions/session1.md)
+- [Session 2: The Demo Server (in progress)](/docs/sessions/session2.md)
+- Session 3: The MCP Server
+- Session 4: The MCP Client
+- Session 5: The MCP Host
 
 ## Disclaimer
-The content of those files are mainly for my own information. I am putting them out there in case it coudld be helpful for other people, but this is not meant to be a production ready code base or anything like that.
+The content of this repo is for my own information. I am putting them out there in case it coudld be helpful for other people, but this is not meant to be a production ready code base or anything like that. It comes without garanties, warranties, etc.
