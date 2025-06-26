@@ -6,7 +6,8 @@ This experiment will run in several sessions, each session's details can be foun
 
 ## Sessions
 
-[Session 1: MCP server basics](/docs/sessions/session1.md)
+- [Session 1: MCP server basics](/docs/sessions/session1.md)
+- [Session 2: The demo server](/docs/sessions/session2.md)
 
 ## Disclaimer
 The content of those files are mainly for my own information. I am putting them out there in case it coudld be helpful for other people, but this is not meant to be a production ready code base or anything like that.

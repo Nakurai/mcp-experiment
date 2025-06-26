@@ -37,6 +37,6 @@ It seems like a big unknown here lies in the authentication. At least when it co
 
 The question is this: where do you login? Or type your credit card information? In the example I gave earlier, I am guessing this will be a necessary feature of the plugins you would install in softwares like Claude Desktop (which also means that those softwares will need to give the plugins the ability to do so). They will need a secure way to receive sensitive data and make the LLMs able to use the resulting authentication mechanism (tokens etc.).
 
-Alright, let's see what a basic MCP server looks like.
+Alright, let's see what a basic MCP server looks like in [session 2](/docs/session2.md).
 
 
