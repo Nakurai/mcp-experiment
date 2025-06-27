@@ -63,7 +63,7 @@ func GetRandomString(length int) (string, error) {
 
 }
 
-func makeRes(w http.ResponseWriter, res any) {
+func MakeRes(w http.ResponseWriter, res any) {
 	w.Header().Set("Content-Type", "application/json")
 	json.NewEncoder(w).Encode(res)
 }

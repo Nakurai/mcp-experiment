@@ -9,7 +9,7 @@ import (
 	"gorm.io/gorm"
 )
 
-type AUthToken struct {
+type AuthToken struct {
 	ID         uint
 	UserNumber string
 	Token      string `gorm:"uniqueIndex"`
@@ -19,8 +19,8 @@ type AUthToken struct {
 }
 
 // Get the requested token
-func GetToken(db *gorm.DB, token string) (*AUthToken, error) {
-	authToken := AUthToken{}
+func GetToken(db *gorm.DB, token string) (*AuthToken, error) {
+	authToken := AuthToken{}
 	result := db.Where("token = ?", token).First(&authToken)
 	if result.Error != nil {
 		if errors.Is(result.Error, gorm.ErrRecordNotFound) {
@@ -34,12 +34,12 @@ func GetToken(db *gorm.DB, token string) (*AUthToken, error) {
 }
 
 // given a user number, generate a new JWT for them and store it in the database
-func CreateToken(db *gorm.DB, userNumber string) (*AUthToken, error) {
+func CreateToken(db *gorm.DB, userNumber string) (*AuthToken, error) {
 	token, err := utils.GenJwt(userNumber)
 	if err != nil {
 		return nil, fmt.Errorf("error generating new jwt %w", err)
 	}
-	authToken := AUthToken{Token: token, UserNumber: userNumber}
+	authToken := AuthToken{Token: token, UserNumber: userNumber}
 	result := db.Create(&authToken)
 	if result.Error != nil {
 		return nil, result.Error

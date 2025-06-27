@@ -20,7 +20,7 @@ func GenJwt(user_number string) (string, error) {
 	})
 
 	// Sign and get the complete encoded token as a string using the secret
-	return token.SignedString(ENV["SERVER_SECRET"])
+	return token.SignedString([]byte(ENV["SERVER_SECRET"]))
 }
 
 func CheckJwt(token string, userNumber string) error {
