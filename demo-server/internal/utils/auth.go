@@ -14,30 +14,33 @@ type CustomClaims struct {
 }
 
 func GenJwt(user_number string) (string, error) {
-	token := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.MapClaims{
-		"user_number": user_number,
-		"exp":         time.Now().Add(time.Hour).Unix(),
-	})
+	exp := time.Now().Add(time.Hour).Unix()
+	claims := CustomClaims{
+		UserNumber: user_number,
+		Exp:        exp,
+		RegisteredClaims: jwt.RegisteredClaims{
+			ExpiresAt: jwt.NewNumericDate(time.Now().Add(time.Hour)),
+		},
+	}
+	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
 
 	// Sign and get the complete encoded token as a string using the secret
-	return token.SignedString([]byte(ENV["SERVER_SECRET"]))
+	return token.SignedString([]byte(ENV["SERVER_KEY"]))
 }
 
 func CheckJwt(token string, userNumber string) error {
-
-	parsedToken, err := jwt.ParseWithClaims(token, CustomClaims{}, func(t *jwt.Token) (interface{}, error) {
+	claims := CustomClaims{}
+	parsedToken, err := jwt.ParseWithClaims(token, &claims, func(t *jwt.Token) (interface{}, error) {
+		if t.Method != jwt.SigningMethodHS256 {
+			return nil, fmt.Errorf("unexpected signing method: %v", t.Header["alg"])
+		}
 		return []byte(ENV["SERVER_KEY"]), nil
-	}, jwt.WithValidMethods([]string{"HS256"}))
+	})
 	if err != nil {
 		return err
 	}
 
 	if !parsedToken.Valid {
-		return fmt.Errorf("invalid token")
-	}
-
-	claims, ok := parsedToken.Claims.(*CustomClaims)
-	if !ok {
 		return fmt.Errorf("invalid token")
 	}
 

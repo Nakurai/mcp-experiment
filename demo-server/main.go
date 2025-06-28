@@ -40,6 +40,7 @@ func createApp() *http.ServeMux{
 	mux := http.NewServeMux()
 	fs := http.FileServer(http.Dir("./public"))
 	mux.Handle("/", fs)
+	mux.Handle("/api/message", withAuth(http.HandlerFunc(handlers.HandleMessage)))
 	mux.HandleFunc("/api/login", handlers.HandleGitHubLogin)
 	mux.HandleFunc("/api/github/callback", handlers.HandleGitHubCallback)
 	return mux
@@ -54,7 +55,7 @@ func main() {
 	if err != nil {
 		log.Fatal(err)
 	}
-	db.AutoMigrate(&models.User{}, &models.AuthToken{})
+	db.AutoMigrate(&models.User{}, &models.AuthToken{}, &models.Message{})
 
 	// start state token expiration checks
 	statetoken.Init(ctx)

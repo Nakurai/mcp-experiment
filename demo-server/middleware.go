@@ -2,6 +2,7 @@ package main
 
 import (
 	"context"
+	"log"
 	"net/http"
 	"strings"
 
@@ -25,7 +26,7 @@ func withAuth(next http.Handler) http.Handler {
 			http.Error(w, "No db provided", http.StatusInternalServerError)
 			return
 		}
-		authorization, ok := r.Header["Autorization"]
+		authorization, ok := r.Header["Authorization"]
 		if !ok || len(authorization) == 0 {
 			http.Error(w, "No token provided", http.StatusUnauthorized)
 			return
@@ -45,10 +46,12 @@ func withAuth(next http.Handler) http.Handler {
 
 		err = utils.CheckJwt(authToken.Token, authToken.UserNumber)
 		if err != nil {
-			http.Error(w, "provided token does not exist", http.StatusUnauthorized)
+			log.Default().Printf("in withAuth provided token is not valid: %v\n", err)
+			http.Error(w, "provided token is not valid", http.StatusUnauthorized)
 			return
 		}
 
-		next.ServeHTTP(w, r)
+		ctx := context.WithValue(r.Context(), "user", authToken.UserNumber)
+		next.ServeHTTP(w, r.WithContext(ctx))
 	})
 }
